@@ -1,0 +1,9 @@
+name: octane-story-creator-action
+description: 'GitHub Action to Create Octane Tickets'
+author: 'jamesnswithers'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+branding:
+  icon: 'edit-3'
+  color: 'blue'
