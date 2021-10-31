@@ -93,9 +93,10 @@ const run = async (): Promise<void> => {
     };
     octaneEntityType = octane.Octane.entityTypes.qualities;
   }
+  
   const creationObj = await octaneConn.create(octaneEntityType, octaneEntity).fields('id').execute();
   core.debug('Creation response: ' + JSON.stringify(creationObj));
-  core.info('Payload: ' + JSON.stringify(payload));
+
   if (creationObj.total_count === 1) {
     const createdId = creationObj.data[0].id;
     core.info("Created id: " + createdId);
@@ -104,7 +105,7 @@ const run = async (): Promise<void> => {
         Object.assign({}, github.context.repo),
         {
           issue_number: payload!.issue!.number,
-          body: "OCTANE-US" + createdId + "; https://" + octaneServer + "/ui/entity-navigation?p=" + octaneSharedSpace + "/" + octaneWorkspace + "&entityType=work_item&id=" + createdId
+          body: "Octane ticket [OCTANE-US" + createdId + "];(" + octaneServer + "/ui/entity-navigation?p=" + octaneSharedSpace + "/" + octaneWorkspace + "&entityType=work_item&id=" + createdId + ") has been created!"
         }
       )
     );
