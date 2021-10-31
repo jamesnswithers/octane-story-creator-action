@@ -100,7 +100,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
     });
     const story = yield octaneConn.get(octane.Octane.entityTypes.stories).at(220174).execute();
-    core.info(story);
+    core.info(story.name);
+    core.info(story.description);
 });
 run();
 exports.default = run;
