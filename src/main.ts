@@ -77,10 +77,24 @@ const run = async (): Promise<void> => {
       description: 'some description here'
     };
     octaneEntityType = octane.Octane.entityTypes.defects;
+  } else if (requestedType === "story") {
+    octaneEntity = {
+      name: requestedTitle,
+      description: 'some description here'
+    };
+    octaneEntityType = octane.Octane.entityTypes.stories;
+  } else if (requestedType === "quality") {
+    octaneEntity = {
+      name: requestedTitle,
+      description: 'some description here'
+    };
+    octaneEntityType = octane.Octane.entityTypes.quality;
   }
   const creationObj = await octaneConn.create(octaneEntityType, octaneEntity).fields('id').execute();
-  core.info(JSON.stringify(creationObj));
-  core.info(creationObj.id);
+  core.debug('Creation response: ' + JSON.stringify(creationObj));
+  if (creationObj.total_count === 1) {
+    const createdId = creationObj.data[0].id;
+  }
 }
 
 run();
