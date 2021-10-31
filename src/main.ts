@@ -79,7 +79,7 @@ const run = async (): Promise<void> => {
     octaneEntityType = octane.Octane.entityTypes.defects;
   }
   const creationObj = await octaneConn.create(octaneEntityType, octaneEntity).fields('id').execute();
-  core.info(creationObj);
+  core.info(JSON.stringify(creationObj));
   core.info(creationObj.id);
 }
 
