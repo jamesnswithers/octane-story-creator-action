@@ -99,9 +99,16 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             ALM_OCTANE_TECH_PREVIEW: true
         }
     });
-    const story = yield octaneConn.get(octane.Octane.entityTypes.stories).at(220174).fields('name', 'description').execute();
-    core.info(story.name);
-    core.info(story.description);
+    let octaneEntity, octaneEntityType;
+    if (requestedType === "defect") {
+        octaneEntity = {
+            name: requestedTitle,
+            description: 'some description here'
+        };
+        octaneEntityType = octane.Octane.entityTypes.defects;
+    }
+    const creationObj = octaneConn.create(octaneEntityType, octaneEntity).execute();
+    core.info(creationObj);
 });
 run();
 exports.default = run;
