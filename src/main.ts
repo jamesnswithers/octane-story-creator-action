@@ -69,6 +69,9 @@ const run = async (): Promise<void> => {
       ALM_OCTANE_TECH_PREVIEW: true
     }
   });
+  
+  const story = await octaneConn.get(octane.Octane.entityTypes.stories).at(220174).execute()
+  core.info(story);
 }
 
 run();
