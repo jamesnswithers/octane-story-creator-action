@@ -120,7 +120,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             name: requestedTitle,
             description: 'some description here'
         };
-        octaneEntityType = octane.Octane.entityTypes.qualities;
+        octaneEntityType = octane.Octane.entityTypes.quality_stories;
     }
     const creationObj = yield octaneConn.create(octaneEntityType, octaneEntity).fields('id').execute();
     core.debug('Creation response: ' + JSON.stringify(creationObj));
