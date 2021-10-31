@@ -107,7 +107,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         };
         octaneEntityType = octane.Octane.entityTypes.defects;
     }
-    const creationObj = octaneConn.create(octaneEntityType, octaneEntity).fields('id').execute();
+    const creationObj = yield octaneConn.create(octaneEntityType, octaneEntity).fields('id').execute();
     core.info(creationObj);
     core.info(creationObj.id);
 });
