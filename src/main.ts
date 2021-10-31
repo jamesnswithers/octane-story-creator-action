@@ -4,7 +4,7 @@ import * as github from '@actions/github';
 import stringArgv from 'string-argv'
 
 const octaneActions = ['create']
-const octaneStoryTypes = ['user', 'defect', 'quality']
+const octaneStoryTypes = ['story', 'defect', 'quality']
 
 const run = async (): Promise<void> => {
   const context = github!.context;

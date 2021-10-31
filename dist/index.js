@@ -51,7 +51,7 @@ const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const string_argv_1 = __importDefault(__nccwpck_require__(9453));
 const octaneActions = ['create'];
-const octaneStoryTypes = ['user', 'defect', 'quality'];
+const octaneStoryTypes = ['story', 'defect', 'quality'];
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
     const context = github.context;
     const payload = context.payload;
