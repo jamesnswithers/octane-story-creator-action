@@ -129,7 +129,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         core.info("Created id: " + createdId);
         gitHubClient.issues.createComment(Object.assign(Object.assign({}, github.context.repo), {
             issue_number: payload.issue.number,
-            body: "Octane ticket [OCTANE-US" + createdId + "];(" + octaneServer + "/ui/entity-navigation?p=" + octaneSharedSpace + "/" + octaneWorkspace + "&entityType=work_item&id=" + createdId + ") has been created!"
+            body: "Octane ticket [OCTANE-US" + createdId + "](" + octaneServer + "/ui/entity-navigation?p=" + octaneSharedSpace + "/" + octaneWorkspace + "&entityType=work_item&id=" + createdId + ") has been created!"
         }));
     }
 });
