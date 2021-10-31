@@ -102,8 +102,8 @@ const run = async (): Promise<void> => {
       Object.assign(
         Object.assign({}, github.context.repo),
         {
-          issue_number: payload!.pull_request!.number,
-          body: "OCTANE-US" + createdId + "; https://" + octaneServer + "/uientity-navigation?p=" + octaneSharedSpace + "/" + octaneWorkspace + "&entityType=work_item&id=" + createdId
+          issue_number: payload!.issue!.pull_request!.number,
+          body: "OCTANE-US" + createdId + "; https://" + octaneServer + "/ui/entity-navigation?p=" + octaneSharedSpace + "/" + octaneWorkspace + "&entityType=work_item&id=" + createdId
         }
       )
     );
