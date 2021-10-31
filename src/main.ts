@@ -12,11 +12,11 @@ const {
   SHARED_SPACE: octaneSharedSpace,
   WORKSPACE: octaneWorkspace,
   USER: octaneUser,
-  PASSWORD: octanePassword
+  PASSWORD: octanePassword,
+  GITHUB_TOKEN: githubToken = ""
 } = process.env
 
 const run = async (): Promise<void> => {
-  const githubToken = core.getInput('github-token', { required: true });
   const gitHubClient = new github.GitHub(githubToken);
 
   const context = github!.context;

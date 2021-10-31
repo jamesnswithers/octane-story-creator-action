@@ -53,9 +53,8 @@ const string_argv_1 = __importDefault(__nccwpck_require__(9453));
 const octane = __importStar(__nccwpck_require__(9167));
 const octaneActions = ['create'];
 const octaneStoryTypes = ['story', 'defect', 'quality'];
-const { SERVER: octaneServer, SHARED_SPACE: octaneSharedSpace, WORKSPACE: octaneWorkspace, USER: octaneUser, PASSWORD: octanePassword } = process.env;
+const { SERVER: octaneServer, SHARED_SPACE: octaneSharedSpace, WORKSPACE: octaneWorkspace, USER: octaneUser, PASSWORD: octanePassword, GITHUB_TOKEN: githubToken = "" } = process.env;
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    const githubToken = core.getInput('github-token', { required: true });
     const gitHubClient = new github.GitHub(githubToken);
     const context = github.context;
     const payload = context.payload;
