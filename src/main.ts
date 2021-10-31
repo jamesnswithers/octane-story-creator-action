@@ -2,9 +2,18 @@ import * as _ from 'lodash';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import stringArgv from 'string-argv'
+import * as octane from '@microfocus/alm-octane-js-rest-sdk'
 
 const octaneActions = ['create']
 const octaneStoryTypes = ['story', 'defect', 'quality']
+
+const {
+  SERVER: octaneServer ,
+  SHARED_SPACE: octaneSharedSpace,
+  WORKSPACE: octaneWorkspace,
+  USER: octaneUser,
+  PASSWORD: octanePassword
+} = process.env
 
 const run = async (): Promise<void> => {
   const context = github!.context;
@@ -48,6 +57,18 @@ const run = async (): Promise<void> => {
   core.info('action: ' + requestedAction);
   core.info('type: ' + requestedType);
   core.info('title: ' + requestedTitle);
+
+  core.info('octaneServer: ' + octaneServer);
+  const octaneConn = new octane.Octane({
+    server: octaneServer,
+    sharedSpace: octaneSharedSpace,
+    workspace: octaneWorkspace,
+    user: octaneUser,
+    password: octanePassword,
+    headers: {
+      ALM_OCTANE_TECH_PREVIEW: true
+    }
+  });
 }
 
 run();
