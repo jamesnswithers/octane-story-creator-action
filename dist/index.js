@@ -99,7 +99,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             ALM_OCTANE_TECH_PREVIEW: true
         }
     });
-    const story = yield octaneConn.get(octane.Octane.entityTypes.stories).at(220174).execute();
+    const story = yield octaneConn.get(octane.Octane.entityTypes.stories).at(220174).fields('name', 'description').execute();
     core.info(story.name);
     core.info(story.description);
 });

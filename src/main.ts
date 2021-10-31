@@ -70,7 +70,7 @@ const run = async (): Promise<void> => {
     }
   });
   
-  const story = await octaneConn.get(octane.Octane.entityTypes.stories).at(220174).execute();
+  const story = await octaneConn.get(octane.Octane.entityTypes.stories).at(220174).fields('name', 'description').execute();
   core.info(story.name);
   core.info(story.description);
 }
