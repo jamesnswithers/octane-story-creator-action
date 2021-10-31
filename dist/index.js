@@ -55,6 +55,8 @@ const octaneActions = ['create'];
 const octaneStoryTypes = ['story', 'defect', 'quality'];
 const { SERVER: octaneServer, SHARED_SPACE: octaneSharedSpace, WORKSPACE: octaneWorkspace, USER: octaneUser, PASSWORD: octanePassword } = process.env;
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
+    const githubToken = core.getInput('github-token', { required: true });
+    const gitHubClient = new github.GitHub(githubToken);
     const context = github.context;
     const payload = context.payload;
     const action = payload.action || '';
@@ -119,12 +121,17 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             name: requestedTitle,
             description: 'some description here'
         };
-        octaneEntityType = octane.Octane.entityTypes.quality;
+        octaneEntityType = octane.Octane.entityTypes.qualities;
     }
     const creationObj = yield octaneConn.create(octaneEntityType, octaneEntity).fields('id').execute();
     core.debug('Creation response: ' + JSON.stringify(creationObj));
     if (creationObj.total_count === 1) {
         const createdId = creationObj.data[0].id;
+        core.info("Created id: " + createdId);
+        gitHubClient.issues.createComment(Object.assign(Object.assign({}, github.context.repo), {
+            issue_number: payload.pull_request.number,
+            body: "OCTANE-US" + createdId + "; https://" + octaneServer + "/uientity-navigation?p=" + octaneSharedSpace + "/" + octaneWorkspace + "&entityType=work_item&id=" + createdId
+        }));
     }
 });
 run();

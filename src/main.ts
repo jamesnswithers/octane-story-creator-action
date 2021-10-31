@@ -16,6 +16,9 @@ const {
 } = process.env
 
 const run = async (): Promise<void> => {
+  const githubToken = core.getInput('github-token', { required: true });
+  const gitHubClient = new github.GitHub(githubToken);
+
   const context = github!.context;
   const payload = context!.payload;
   const action = payload!.action || '';
@@ -88,12 +91,22 @@ const run = async (): Promise<void> => {
       name: requestedTitle,
       description: 'some description here'
     };
-    octaneEntityType = octane.Octane.entityTypes.quality;
+    octaneEntityType = octane.Octane.entityTypes.qualities;
   }
   const creationObj = await octaneConn.create(octaneEntityType, octaneEntity).fields('id').execute();
   core.debug('Creation response: ' + JSON.stringify(creationObj));
   if (creationObj.total_count === 1) {
     const createdId = creationObj.data[0].id;
+    core.info("Created id: " + createdId);
+    gitHubClient.issues.createComment(
+      Object.assign(
+        Object.assign({}, github.context.repo),
+        {
+          issue_number: payload!.pull_request!.number,
+          body: "OCTANE-US" + createdId + "; https://" + octaneServer + "/uientity-navigation?p=" + octaneSharedSpace + "/" + octaneWorkspace + "&entityType=work_item&id=" + createdId
+        }
+      )
+    );
   }
 }
 
