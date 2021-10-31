@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
+import * as parseArgs from 'minimist';
 
 const run = async (): Promise<void> => {
   core.debug('👋 Hello! You are an amazing person! 🙌')
@@ -23,6 +24,17 @@ const run = async (): Promise<void> => {
 
   const comment = payload.comment.body;
   core.info('The comment is: ' + comment);
+
+  const commentFirstLine = comment.split("\r", 1)
+  core.info('The first line is: ' + commentFirstLine);
+
+  if (!commentFirstLine.startsWith("/octane")) {
+    core.info('Comment does not start with /octane');
+    return;
+  }
+
+  const octaneCommand = parseArgs(comment);
+  core.info(octaneCommand);
 }
 
 run();

@@ -31,7 +31,8 @@
     "@vercel/ncc": "^0.29.1",
     "codeowners-api": "^2.0.0",
     "js-yaml": "^3.13.1",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "minimist": "^1.2.5"
   },
   "devDependencies": {
     "@types/jest": "^25.2.2",
