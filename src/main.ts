@@ -3,9 +3,10 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import stringArgv from 'string-argv'
 
-const run = async (): Promise<void> => {
-  core.debug('👋 Hello! You are an amazing person! 🙌')
+const octaneActions = ['create']
+const octaneStoryTypes = ['user', 'defect', 'quality']
 
+const run = async (): Promise<void> => {
   const context = github!.context;
   const payload = context!.payload;
   const action = payload!.action || '';
@@ -20,13 +21,13 @@ const run = async (): Promise<void> => {
     core.info('The action didn\'t create or edit a comment');
     return;
   }
-  core.info('The action is: ' + action);
+  core.debug('The action is: ' + action);
 
   const comment = payload.comment.body;
-  core.info('The comment is: ' + comment);
+  core.debug('The comment is: ' + comment);
 
   const commentFirstLine = comment.split("\r", 1)
-  core.info('The first line is: ' + commentFirstLine);
+  core.debug('The first line is: ' + commentFirstLine);
 
   const octaneCommand = stringArgv(commentFirstLine);
   if (octaneCommand[0] !== "/octane") {
@@ -34,7 +35,19 @@ const run = async (): Promise<void> => {
     return;
   }
 
+  const requestedAction = octaneCommand[1];
+  const requestedType = octaneCommand[2];
+  const requestedTitle = octaneCommand[3];
+
   core.info(octaneCommand.toString());
+  if (!(_.includes(octaneActions, requestedAction) && _.includes(octaneStoryTypes, requestedType))) {
+    core.info('Comment does not contain correct Octane actions or types');
+    return;
+  }
+  
+  core.info('action: ' + requestedAction);
+  core.info('type: ' + requestedType);
+  core.info('title: ' + requestedTitle);
 }
 
 run();
