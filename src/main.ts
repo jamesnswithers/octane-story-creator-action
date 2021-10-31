@@ -28,7 +28,7 @@ const run = async (): Promise<void> => {
   const commentFirstLine = comment.split("\r", 1)
   core.info('The first line is: ' + commentFirstLine);
 
-  if (!commentFirstLine.startsWith("/octane")) {
+  if (commentFirstLine[0] !== "/octane") {
     core.info('Comment does not start with /octane');
     return;
   }
