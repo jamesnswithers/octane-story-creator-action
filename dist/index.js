@@ -66,11 +66,11 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     core.info('The comment is: ' + comment);
     const commentFirstLine = comment.split("\r", 1);
     core.info('The first line is: ' + commentFirstLine);
-    if (commentFirstLine[0] !== "/octane") {
+    const octaneCommand = parseArgs(commentFirstLine);
+    if (octaneCommand[0] !== "/octane") {
         core.info('Comment does not start with /octane');
         return;
     }
-    const octaneCommand = parseArgs(comment);
     core.info(octaneCommand);
 });
 run();
