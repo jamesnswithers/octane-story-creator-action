@@ -18,12 +18,12 @@ jobs:
     steps:
       - uses: jamesnswithers/octane-story-creator-action@main
         env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
           SERVER: '${{ secrets.OCTANE_SERVER }}'
           WORKSPACE: '${{ secrets.OCTANE_WORKSPACE }}'
           SHARED_SPACE: '${{ secrets.OCTANE_SHAREDSPACE }}'
           USER: '${{ secrets.OCTANE_USER }}'
           PASSWORD: '${{ secrets.OCTANE_PASSWORD }}'
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
           APPLICATIONS: <CSV List of Application IDs> e.g. 11001,11012
 ```
 
