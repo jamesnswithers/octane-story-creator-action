@@ -5,7 +5,7 @@
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
-    "gh-compile": "ncc build lib/main.js --license licenses.txt",
+    "gh-compile": "tsc && ncc build lib/main.js --license licenses.txt",
     "test": "jest",
     "format": "prettier --write src/*.ts"
   },
