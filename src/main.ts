@@ -78,7 +78,7 @@ const run = async (): Promise<void> => {
   if (requestedType === "defect") {
     octaneEntity = {
       name: requestedTitle,
-      description: 'some description here',
+      description: '',
       application_modules: {data: []}
     };
     octaneEntityType = octane.Octane.entityTypes.defects;
@@ -86,7 +86,7 @@ const run = async (): Promise<void> => {
   } else if (requestedType === "story") {
     octaneEntity = {
       name: requestedTitle,
-      description: 'some description here',
+      description: '',
       application_modules: {data: []}
     };
     octaneEntityType = octane.Octane.entityTypes.stories;
@@ -94,7 +94,7 @@ const run = async (): Promise<void> => {
   } else if (requestedType === "quality") {
     octaneEntity = {
       name: requestedTitle,
-      description: 'some description here',
+      description: '',
       application_modules: {data: []}
     };
     octaneEntityType = octane.Octane.entityTypes.qualityStories;

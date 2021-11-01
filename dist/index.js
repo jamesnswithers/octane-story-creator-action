@@ -104,7 +104,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     if (requestedType === "defect") {
         octaneEntity = {
             name: requestedTitle,
-            description: 'some description here',
+            description: '',
             application_modules: { data: [] }
         };
         octaneEntityType = octane.Octane.entityTypes.defects;
@@ -113,7 +113,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     else if (requestedType === "story") {
         octaneEntity = {
             name: requestedTitle,
-            description: 'some description here',
+            description: '',
             application_modules: { data: [] }
         };
         octaneEntityType = octane.Octane.entityTypes.stories;
@@ -122,7 +122,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     else if (requestedType === "quality") {
         octaneEntity = {
             name: requestedTitle,
-            description: 'some description here',
+            description: '',
             application_modules: { data: [] }
         };
         octaneEntityType = octane.Octane.entityTypes.qualityStories;
