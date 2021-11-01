@@ -13,7 +13,8 @@ const {
   WORKSPACE: octaneWorkspace,
   USER: octaneUser,
   PASSWORD: octanePassword,
-  GITHUB_TOKEN: githubToken = ""
+  GITHUB_TOKEN: githubToken = "",
+  APPLICATIONS: octaneApplications = ""
 } = process.env
 
 const run = async (): Promise<void> => {
@@ -77,25 +78,34 @@ const run = async (): Promise<void> => {
   if (requestedType === "defect") {
     octaneEntity = {
       name: requestedTitle,
-      description: 'some description here'
+      description: 'some description here',
+      application_modules: {data: []}
     };
     octaneEntityType = octane.Octane.entityTypes.defects;
     createdComment = "Defect [OCTANE-DE";
   } else if (requestedType === "story") {
     octaneEntity = {
       name: requestedTitle,
-      description: 'some description here'
+      description: 'some description here',
+      application_modules: {data: []}
     };
     octaneEntityType = octane.Octane.entityTypes.stories;
     createdComment = "Story [OCTANE-US";
   } else if (requestedType === "quality") {
     octaneEntity = {
       name: requestedTitle,
-      description: 'some description here'
+      description: 'some description here',
+      application_modules: {data: []}
     };
     octaneEntityType = octane.Octane.entityTypes.qualityStories;
     createdComment = "Quality Story [OCTANE-QS";
   }
+
+  let octaneAppModules = [];
+  _.forEach(octaneApplications.split(","), function(value) {
+    octaneAppModules = _.concat(octaneAppModules, {type: 'application_module', id: value});
+  });
+  octaneEntity.application_modules.data = octaneAppModules;
 
   const creationObj = await octaneConn.create(octaneEntityType, octaneEntity).fields('id').execute();
   core.debug('Creation response: ' + JSON.stringify(creationObj));

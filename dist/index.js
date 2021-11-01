@@ -53,7 +53,7 @@ const string_argv_1 = __importDefault(__nccwpck_require__(9453));
 const octane = __importStar(__nccwpck_require__(9167));
 const octaneActions = ['create'];
 const octaneStoryTypes = ['story', 'defect', 'quality'];
-const { SERVER: octaneServer, SHARED_SPACE: octaneSharedSpace, WORKSPACE: octaneWorkspace, USER: octaneUser, PASSWORD: octanePassword, GITHUB_TOKEN: githubToken = "" } = process.env;
+const { SERVER: octaneServer, SHARED_SPACE: octaneSharedSpace, WORKSPACE: octaneWorkspace, USER: octaneUser, PASSWORD: octanePassword, GITHUB_TOKEN: githubToken = "", APPLICATIONS: octaneApplications = "" } = process.env;
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
     const gitHubClient = new github.GitHub(githubToken);
     const context = github.context;
@@ -104,7 +104,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     if (requestedType === "defect") {
         octaneEntity = {
             name: requestedTitle,
-            description: 'some description here'
+            description: 'some description here',
+            application_modules: { data: [] }
         };
         octaneEntityType = octane.Octane.entityTypes.defects;
         createdComment = "Defect [OCTANE-DE";
@@ -112,7 +113,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     else if (requestedType === "story") {
         octaneEntity = {
             name: requestedTitle,
-            description: 'some description here'
+            description: 'some description here',
+            application_modules: { data: [] }
         };
         octaneEntityType = octane.Octane.entityTypes.stories;
         createdComment = "Story [OCTANE-US";
@@ -120,11 +122,17 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     else if (requestedType === "quality") {
         octaneEntity = {
             name: requestedTitle,
-            description: 'some description here'
+            description: 'some description here',
+            application_modules: { data: [] }
         };
         octaneEntityType = octane.Octane.entityTypes.qualityStories;
         createdComment = "Quality Story [OCTANE-QS";
     }
+    let octaneAppModules = [];
+    _.forEach(octaneApplications.split(","), function (value) {
+        octaneAppModules = _.concat(octaneAppModules, { type: 'application_module', id: value });
+    });
+    octaneEntity.application_modules.data = octaneAppModules;
     const creationObj = yield octaneConn.create(octaneEntityType, octaneEntity).fields('id').execute();
     core.debug('Creation response: ' + JSON.stringify(creationObj));
     if (creationObj.total_count === 1) {
