@@ -91,7 +91,7 @@ const run = async (): Promise<void> => {
       name: requestedTitle,
       description: 'some description here'
     };
-    octaneEntityType = octane.Octane.entityTypes.quality_stories;
+    octaneEntityType = octane.Octane.entityTypes.qualityStories;
   }
 
   const creationObj = await octaneConn.create(octaneEntityType, octaneEntity).fields('id').execute();
