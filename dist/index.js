@@ -80,7 +80,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     }
     const requestedAction = octaneCommand[1];
     const requestedType = octaneCommand[2];
-    const requestedTitle = octaneCommand[3];
+    const requestedTitle = _.defaultTo(_.nth(octaneCommand, 3), payload.issue.title);
     core.info(octaneCommand.toString());
     if (!(_.includes(octaneActions, requestedAction) && _.includes(octaneStoryTypes, requestedType))) {
         core.info('Comment does not contain correct Octane actions or types');

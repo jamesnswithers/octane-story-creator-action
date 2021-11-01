@@ -50,7 +50,7 @@ const run = async (): Promise<void> => {
 
   const requestedAction = octaneCommand[1];
   const requestedType = octaneCommand[2];
-  const requestedTitle = octaneCommand[3];
+  const requestedTitle = _.defaultTo(_.nth(octaneCommand, 3), payload!.issue!.title);
 
   core.info(octaneCommand.toString());
   if (!(_.includes(octaneActions, requestedAction) && _.includes(octaneStoryTypes, requestedType))) {
