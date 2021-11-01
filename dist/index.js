@@ -100,13 +100,14 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             ALM_OCTANE_TECH_PREVIEW: true
         }
     });
-    let octaneEntity, octaneEntityType;
+    let octaneEntity, octaneEntityType, createdComment;
     if (requestedType === "defect") {
         octaneEntity = {
             name: requestedTitle,
             description: 'some description here'
         };
         octaneEntityType = octane.Octane.entityTypes.defects;
+        createdComment = "Defect [OCTANE-DE";
     }
     else if (requestedType === "story") {
         octaneEntity = {
@@ -114,6 +115,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             description: 'some description here'
         };
         octaneEntityType = octane.Octane.entityTypes.stories;
+        createdComment = "Story [OCTANE-US";
     }
     else if (requestedType === "quality") {
         octaneEntity = {
@@ -121,15 +123,17 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             description: 'some description here'
         };
         octaneEntityType = octane.Octane.entityTypes.qualityStories;
+        createdComment = "Quality Story [OCTANE-QS";
     }
     const creationObj = yield octaneConn.create(octaneEntityType, octaneEntity).fields('id').execute();
     core.debug('Creation response: ' + JSON.stringify(creationObj));
     if (creationObj.total_count === 1) {
         const createdId = creationObj.data[0].id;
         core.info("Created id: " + createdId);
+        const entityUrl = octaneServer + "/ui/entity-navigation?p=" + octaneSharedSpace + "/" + octaneWorkspace + "&entityType=work_item&id=" + createdId;
         gitHubClient.issues.createComment(Object.assign(Object.assign({}, github.context.repo), {
             issue_number: payload.issue.number,
-            body: "Octane ticket [OCTANE-US" + createdId + "](" + octaneServer + "/ui/entity-navigation?p=" + octaneSharedSpace + "/" + octaneWorkspace + "&entityType=work_item&id=" + createdId + ") has been created!"
+            body: createdComment + createdId + "](" + entityUrl + ") has been created!"
         }));
     }
 });
