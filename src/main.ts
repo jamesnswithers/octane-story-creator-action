@@ -54,9 +54,11 @@ const run = async (): Promise<void> => {
   const requestedAction = octaneCommand[1];
   const requestedType = octaneCommand[2];
   const requestedTitle = _.defaultTo(_.nth(octaneCommand, 3), payload!.issue!.title);
-  const configTemplate = _.get(config, _.defaultTo(_.nth(octaneCommand, 4), "default"));
 
-  core.info(octaneCommand.toString());
+  const templateIndex = _.indexOf(octaneCommand, '--template');
+  const templateName = templateIndex > 0 ? _.nth(octaneCommand, templateIndex + 1) : 'default';
+  const templateConfig = _.get(config, templateName);
+
   if (!(_.includes(octaneActions, requestedAction) && _.includes(octaneStoryTypes, requestedType))) {
     core.info('Comment does not contain correct Octane actions or types');
     return;
@@ -83,8 +85,8 @@ const run = async (): Promise<void> => {
     octaneEntity = {
       name: requestedTitle
     };
-    if (_.hasIn(configTemplate , 'defect')) {
-      _.merge(octaneEntity, _.get(configTemplate, 'defect'));
+    if (_.hasIn(templateConfig , 'defect')) {
+      _.merge(octaneEntity, _.get(templateConfig, 'defect'));
     }
     octaneEntityType = octane.Octane.entityTypes.defects;
     createdComment = "Defect";
@@ -92,8 +94,8 @@ const run = async (): Promise<void> => {
     octaneEntity = {
       name: requestedTitle
     };
-    if (_.hasIn(configTemplate , 'story')) {
-      _.merge(octaneEntity, _.get(configTemplate, 'story'));
+    if (_.hasIn(templateConfig , 'story')) {
+      _.merge(octaneEntity, _.get(templateConfig, 'story'));
     }
     octaneEntityType = octane.Octane.entityTypes.stories;
     createdComment = "Story";
@@ -101,8 +103,8 @@ const run = async (): Promise<void> => {
     octaneEntity = {
       name: requestedTitle
     };
-    if (_.hasIn(configTemplate , 'quality')) {
-      _.merge(octaneEntity, _.get(configTemplate, 'quality'));
+    if (_.hasIn(templateConfig , 'quality')) {
+      _.merge(octaneEntity, _.get(templateConfig, 'quality'));
     }
     octaneEntityType = octane.Octane.entityTypes.qualityStories;
     createdComment = "Quality Story";
