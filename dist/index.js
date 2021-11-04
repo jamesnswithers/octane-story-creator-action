@@ -183,7 +183,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             name: requestedTitle
         };
         if (_.hasIn(config, 'defect')) {
+            core.info(_.get(config, 'defect'));
             _.merge(octaneEntity, _.get(config, 'defect'));
+            core.info(_.get(octaneEntity, 'defect'));
         }
         octaneEntityType = octane.Octane.entityTypes.defects;
         createdComment = "Defect";

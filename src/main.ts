@@ -81,7 +81,9 @@ const run = async (): Promise<void> => {
       name: requestedTitle
     };
     if (_.hasIn(config , 'defect')) {
+      core.info(_.get(config, 'defect'));
       _.merge(octaneEntity, _.get(config, 'defect'));
+      core.info(_.get(octaneEntity, 'defect'));
     }
     octaneEntityType = octane.Octane.entityTypes.defects;
     createdComment = "Defect";
