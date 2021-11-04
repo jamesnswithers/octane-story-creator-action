@@ -9,6 +9,81 @@ module.exports = JSON.parse('{"_args":[["@octokit/rest@16.43.2","C:\\\\github\\\
 
 /***/ }),
 
+/***/ 88:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getConfig = void 0;
+const github = __importStar(__nccwpck_require__(5438));
+const CONFIG_FILE = '.github/octane-story-creator.json';
+/**
+ * Loads the json configuration file from GitHub
+ *
+ * @param {object} gitHubClient An authenticated GitHub context
+ * @param {object} params Params to fetch the file with
+ * @returns {Promise<object>} The parsed JSON file
+ * @async
+ */
+function loadJsonConfig(gitHubClient, params) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const response = yield gitHubClient.repos.getContents(params);
+        if (typeof response.data.content !== 'string') {
+            return;
+        }
+        return JSON.parse(Buffer.from(response.data.content, 'base64').toString()) || {};
+    });
+}
+/**
+ * Loads the specified config file from the context's repository
+ *
+ * If the config file does not exist in the context's repository, `null`
+ * is returned.
+ *
+ * @param {object} gitHubClient An authenticated GitHub context
+ * @returns {object} The merged configuration
+ * @async
+ */
+function getConfig(gitHubClient) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const params = Object.assign(Object.assign({}, github.context.repo), { path: CONFIG_FILE });
+        return yield loadJsonConfig(gitHubClient, params);
+    });
+}
+exports.getConfig = getConfig;
+
+
+/***/ }),
+
 /***/ 3109:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -51,11 +126,13 @@ const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const string_argv_1 = __importDefault(__nccwpck_require__(9453));
 const octane = __importStar(__nccwpck_require__(9167));
+const config_1 = __nccwpck_require__(88);
 const octaneActions = ['create'];
 const octaneStoryTypes = ['story', 'defect', 'quality'];
-const { SERVER: octaneServer, SHARED_SPACE: octaneSharedSpace, WORKSPACE: octaneWorkspace, USER: octaneUser, PASSWORD: octanePassword, GITHUB_TOKEN: githubToken = "", APPLICATIONS: octaneApplications = "" } = process.env;
+const { SERVER: octaneServer, SHARED_SPACE: octaneSharedSpace, WORKSPACE: octaneWorkspace, USER: octaneUser, PASSWORD: octanePassword, GITHUB_TOKEN: githubToken = "" } = process.env;
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
     const gitHubClient = new github.GitHub(githubToken);
+    const config = config_1.getConfig(gitHubClient);
     const context = github.context;
     const payload = context.payload;
     const action = payload.action || '';
@@ -103,36 +180,34 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     let octaneEntity, octaneEntityType, createdComment;
     if (requestedType === "defect") {
         octaneEntity = {
-            name: requestedTitle,
-            description: '',
-            application_modules: { data: [] }
+            name: requestedTitle
         };
+        if (_.hasIn(config, 'defect')) {
+            _.merge(octaneEntity, _.get(config, 'defect'));
+        }
         octaneEntityType = octane.Octane.entityTypes.defects;
         createdComment = "Defect";
     }
     else if (requestedType === "story") {
         octaneEntity = {
-            name: requestedTitle,
-            description: '',
-            application_modules: { data: [] }
+            name: requestedTitle
         };
+        if (_.hasIn(config, 'story')) {
+            _.merge(octaneEntity, _.get(config, 'story'));
+        }
         octaneEntityType = octane.Octane.entityTypes.stories;
         createdComment = "Story";
     }
     else if (requestedType === "quality") {
         octaneEntity = {
-            name: requestedTitle,
-            description: '',
-            application_modules: { data: [] }
+            name: requestedTitle
         };
+        if (_.hasIn(config, 'quality')) {
+            _.merge(octaneEntity, _.get(config, 'quality'));
+        }
         octaneEntityType = octane.Octane.entityTypes.qualityStories;
         createdComment = "Quality Story";
     }
-    let octaneAppModules = [];
-    _.forEach(octaneApplications.split(","), function (value) {
-        octaneAppModules = _.concat(octaneAppModules, { type: 'application_module', id: value });
-    });
-    octaneEntity.application_modules.data = octaneAppModules;
     const creationObj = yield octaneConn.create(octaneEntityType, octaneEntity).fields('id').execute();
     core.debug('Creation response: ' + JSON.stringify(creationObj));
     if (creationObj.total_count === 1) {
