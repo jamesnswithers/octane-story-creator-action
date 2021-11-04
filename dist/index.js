@@ -163,7 +163,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     const requestedTitle = titleIndex > 0 ? _.nth(octaneCommand, titleIndex + 1) : payload.issue.title;
     const templateIndex = _.indexOf(octaneCommand, '--template');
     const templateName = templateIndex > 0 ? _.nth(octaneCommand, templateIndex + 1) : 'default';
-    const templateConfig = _.get(config, templateName);
+    const octaneConfig = _.merge(_.get(config, 'default'), _.get(config, templateName));
     if (!(_.includes(octaneActions, requestedAction) && _.includes(octaneStoryTypes, requestedType))) {
         core.info('Comment does not contain correct Octane actions or types');
         return;
@@ -187,8 +187,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         octaneEntity = {
             name: requestedTitle
         };
-        if (_.hasIn(templateConfig, 'defect')) {
-            _.merge(octaneEntity, _.get(templateConfig, 'defect'));
+        if (_.hasIn(octaneConfig, 'defect')) {
+            _.merge(octaneEntity, _.get(octaneConfig, 'defect'));
         }
         octaneEntityType = octane.Octane.entityTypes.defects;
         createdComment = "Defect";
@@ -197,8 +197,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         octaneEntity = {
             name: requestedTitle
         };
-        if (_.hasIn(templateConfig, 'story')) {
-            _.merge(octaneEntity, _.get(templateConfig, 'story'));
+        if (_.hasIn(octaneConfig, 'story')) {
+            _.merge(octaneEntity, _.get(octaneConfig, 'story'));
         }
         octaneEntityType = octane.Octane.entityTypes.stories;
         createdComment = "Story";
@@ -207,8 +207,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         octaneEntity = {
             name: requestedTitle
         };
-        if (_.hasIn(templateConfig, 'quality')) {
-            _.merge(octaneEntity, _.get(templateConfig, 'quality'));
+        if (_.hasIn(octaneConfig, 'quality')) {
+            _.merge(octaneEntity, _.get(octaneConfig, 'quality'));
         }
         octaneEntityType = octane.Octane.entityTypes.qualityStories;
         createdComment = "Quality Story";
