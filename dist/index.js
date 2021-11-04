@@ -152,6 +152,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     const commentFirstLine = comment.split("\r", 1);
     core.debug('The first line is: ' + commentFirstLine);
     const octaneCommand = string_argv_1.default(commentFirstLine);
+    core.info(octaneCommand.toString());
     if (octaneCommand[0] !== "/octane") {
         core.info('Comment does not start with /octane');
         return;

@@ -45,6 +45,7 @@ const run = async (): Promise<void> => {
   core.debug('The first line is: ' + commentFirstLine);
 
   const octaneCommand = stringArgv(commentFirstLine);
+  core.info(octaneCommand.toString());
   if (octaneCommand[0] !== "/octane") {
     core.info('Comment does not start with /octane');
     return;
