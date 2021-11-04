@@ -82,7 +82,7 @@ const run = async (): Promise<void> => {
       application_modules: {data: []}
     };
     octaneEntityType = octane.Octane.entityTypes.defects;
-    createdComment = "Defect [OCTANE-DE";
+    createdComment = "Defect";
   } else if (requestedType === "story") {
     octaneEntity = {
       name: requestedTitle,
@@ -90,7 +90,7 @@ const run = async (): Promise<void> => {
       application_modules: {data: []}
     };
     octaneEntityType = octane.Octane.entityTypes.stories;
-    createdComment = "Story [OCTANE-US";
+    createdComment = "Story";
   } else if (requestedType === "quality") {
     octaneEntity = {
       name: requestedTitle,
@@ -98,7 +98,7 @@ const run = async (): Promise<void> => {
       application_modules: {data: []}
     };
     octaneEntityType = octane.Octane.entityTypes.qualityStories;
-    createdComment = "Quality Story [OCTANE-QS";
+    createdComment = "Quality Story";
   }
 
   let octaneAppModules = [];
@@ -120,7 +120,7 @@ const run = async (): Promise<void> => {
         Object.assign({}, github.context.repo),
         {
           issue_number: payload!.issue!.number,
-          body: createdComment + createdId + "](" + entityUrl + ") has been created!"
+          body: createdComment + "[" + createdId + "](" + entityUrl + ") has been created!"
         }
       )
     );
