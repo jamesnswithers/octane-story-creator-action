@@ -20,7 +20,7 @@ const {
 const run = async (): Promise<void> => {
   const gitHubClient = new github.GitHub(githubToken);
   const config = await getConfig(gitHubClient);
-  core.info(config);
+  core.debug('Action config: ' + JSON.stringify(config));
 
   const context = github!.context;
   const payload = context!.payload;
@@ -82,9 +82,7 @@ const run = async (): Promise<void> => {
       name: requestedTitle
     };
     if (_.hasIn(config , 'defect')) {
-      core.info(_.get(config, 'defect'));
       _.merge(octaneEntity, _.get(config, 'defect'));
-      core.info(_.get(octaneEntity, 'defect'));
     }
     octaneEntityType = octane.Octane.entityTypes.defects;
     createdComment = "Defect";

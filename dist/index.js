@@ -133,7 +133,7 @@ const { SERVER: octaneServer, SHARED_SPACE: octaneSharedSpace, WORKSPACE: octane
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
     const gitHubClient = new github.GitHub(githubToken);
     const config = yield config_1.getConfig(gitHubClient);
-    core.info(config);
+    core.debug('Action config: ' + JSON.stringify(config));
     const context = github.context;
     const payload = context.payload;
     const action = payload.action || '';
@@ -184,9 +184,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             name: requestedTitle
         };
         if (_.hasIn(config, 'defect')) {
-            core.info(_.get(config, 'defect'));
             _.merge(octaneEntity, _.get(config, 'defect'));
-            core.info(_.get(octaneEntity, 'defect'));
         }
         octaneEntityType = octane.Octane.entityTypes.defects;
         createdComment = "Defect";
