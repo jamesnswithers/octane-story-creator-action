@@ -159,6 +159,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     const requestedAction = octaneCommand[1];
     const requestedType = octaneCommand[2];
     const requestedTitle = _.defaultTo(_.nth(octaneCommand, 3), payload.issue.title);
+    const configTemplate = _.get(config, _.defaultTo(_.nth(octaneCommand, 4), "default"));
     core.info(octaneCommand.toString());
     if (!(_.includes(octaneActions, requestedAction) && _.includes(octaneStoryTypes, requestedType))) {
         core.info('Comment does not contain correct Octane actions or types');
@@ -183,8 +184,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         octaneEntity = {
             name: requestedTitle
         };
-        if (_.hasIn(config, 'defect')) {
-            _.merge(octaneEntity, _.get(config, 'defect'));
+        if (_.hasIn(configTemplate, 'defect')) {
+            _.merge(octaneEntity, _.get(configTemplate, 'defect'));
         }
         octaneEntityType = octane.Octane.entityTypes.defects;
         createdComment = "Defect";
@@ -193,8 +194,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         octaneEntity = {
             name: requestedTitle
         };
-        if (_.hasIn(config, 'story')) {
-            _.merge(octaneEntity, _.get(config, 'story'));
+        if (_.hasIn(configTemplate, 'story')) {
+            _.merge(octaneEntity, _.get(configTemplate, 'story'));
         }
         octaneEntityType = octane.Octane.entityTypes.stories;
         createdComment = "Story";
@@ -203,8 +204,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         octaneEntity = {
             name: requestedTitle
         };
-        if (_.hasIn(config, 'quality')) {
-            _.merge(octaneEntity, _.get(config, 'quality'));
+        if (_.hasIn(configTemplate, 'quality')) {
+            _.merge(octaneEntity, _.get(configTemplate, 'quality'));
         }
         octaneEntityType = octane.Octane.entityTypes.qualityStories;
         createdComment = "Quality Story";
