@@ -53,7 +53,9 @@ const run = async (): Promise<void> => {
 
   const requestedAction = octaneCommand[1];
   const requestedType = octaneCommand[2];
-  const requestedTitle = _.defaultTo(_.nth(octaneCommand, 3), payload!.issue!.title);
+
+  const titleIndex = _.indexOf(octaneCommand, '--title');
+  const requestedTitle = titleIndex > 0 ? _.nth(octaneCommand, titleIndex + 1) : payload!.issue!.title;
 
   const templateIndex = _.indexOf(octaneCommand, '--template');
   const templateName = templateIndex > 0 ? _.nth(octaneCommand, templateIndex + 1) : 'default';
