@@ -216,7 +216,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const entityUrl = octaneServer + "/ui/entity-navigation?p=" + octaneSharedSpace + "/" + octaneWorkspace + "&entityType=work_item&id=" + createdId;
         gitHubClient.issues.createComment(Object.assign(Object.assign({}, github.context.repo), {
             issue_number: payload.issue.number,
-            body: createdComment + "[" + createdId + "](" + entityUrl + ") has been created!"
+            body: createdComment + " [" + createdId + "](" + entityUrl + ") has been created!"
         }));
     }
 });

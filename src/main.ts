@@ -118,7 +118,7 @@ const run = async (): Promise<void> => {
         Object.assign({}, github.context.repo),
         {
           issue_number: payload!.issue!.number,
-          body: createdComment + "[" + createdId + "](" + entityUrl + ") has been created!"
+          body: createdComment + " [" + createdId + "](" + entityUrl + ") has been created!"
         }
       )
     );
