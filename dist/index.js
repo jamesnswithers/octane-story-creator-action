@@ -132,7 +132,8 @@ const octaneStoryTypes = ['story', 'defect', 'quality'];
 const { SERVER: octaneServer, SHARED_SPACE: octaneSharedSpace, WORKSPACE: octaneWorkspace, USER: octaneUser, PASSWORD: octanePassword, GITHUB_TOKEN: githubToken = "" } = process.env;
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
     const gitHubClient = new github.GitHub(githubToken);
-    const config = config_1.getConfig(gitHubClient);
+    const config = yield config_1.getConfig(gitHubClient);
+    core.info(config);
     const context = github.context;
     const payload = context.payload;
     const action = payload.action || '';

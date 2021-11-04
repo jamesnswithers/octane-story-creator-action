@@ -19,7 +19,8 @@ const {
 
 const run = async (): Promise<void> => {
   const gitHubClient = new github.GitHub(githubToken);
-  const config = getConfig(gitHubClient);
+  const config = await getConfig(gitHubClient);
+  core.info(config);
 
   const context = github!.context;
   const payload = context!.payload;
