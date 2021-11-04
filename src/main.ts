@@ -3,6 +3,7 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import stringArgv from 'string-argv'
 import * as octane from '@microfocus/alm-octane-js-rest-sdk'
+import { getConfig } from './config'
 
 const octaneActions = ['create']
 const octaneStoryTypes = ['story', 'defect', 'quality']
@@ -13,12 +14,12 @@ const {
   WORKSPACE: octaneWorkspace,
   USER: octaneUser,
   PASSWORD: octanePassword,
-  GITHUB_TOKEN: githubToken = "",
-  APPLICATIONS: octaneApplications = ""
+  GITHUB_TOKEN: githubToken = ""
 } = process.env
 
 const run = async (): Promise<void> => {
   const gitHubClient = new github.GitHub(githubToken);
+  const config = getConfig(gitHubClient);
 
   const context = github!.context;
   const payload = context!.payload;
@@ -77,35 +78,32 @@ const run = async (): Promise<void> => {
   let octaneEntity, octaneEntityType, createdComment;
   if (requestedType === "defect") {
     octaneEntity = {
-      name: requestedTitle,
-      description: '',
-      application_modules: {data: []}
+      name: requestedTitle
     };
+    if (_.hasIn(config , 'defect')) {
+      _.merge(octaneEntity, _.get(config, 'defect'));
+    }
     octaneEntityType = octane.Octane.entityTypes.defects;
     createdComment = "Defect";
   } else if (requestedType === "story") {
     octaneEntity = {
-      name: requestedTitle,
-      description: '',
-      application_modules: {data: []}
+      name: requestedTitle
     };
+    if (_.hasIn(config , 'story')) {
+      _.merge(octaneEntity, _.get(config, 'story'));
+    }
     octaneEntityType = octane.Octane.entityTypes.stories;
     createdComment = "Story";
   } else if (requestedType === "quality") {
     octaneEntity = {
-      name: requestedTitle,
-      description: '',
-      application_modules: {data: []}
+      name: requestedTitle
     };
+    if (_.hasIn(config , 'quality')) {
+      _.merge(octaneEntity, _.get(config, 'quality'));
+    }
     octaneEntityType = octane.Octane.entityTypes.qualityStories;
     createdComment = "Quality Story";
   }
-
-  let octaneAppModules = [];
-  _.forEach(octaneApplications.split(","), function(value) {
-    octaneAppModules = _.concat(octaneAppModules, {type: 'application_module', id: value});
-  });
-  octaneEntity.application_modules.data = octaneAppModules;
 
   const creationObj = await octaneConn.create(octaneEntityType, octaneEntity).fields('id').execute();
   core.debug('Creation response: ' + JSON.stringify(creationObj));
