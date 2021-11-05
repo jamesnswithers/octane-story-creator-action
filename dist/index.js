@@ -92,10 +92,10 @@ exports.getConfig = getConfig;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getHelp = void 0;
 const helpText = `
-  Call on the Octane command using \`/octane <action> <options>\`.
-  Available actions are:
-    - help
-    - create
+Call on the Octane command using \`/octane <action> <options>\`.
+Available actions are:
+- help
+- create
 `;
 /**
  * Creates the help text used in the `/octane help` command

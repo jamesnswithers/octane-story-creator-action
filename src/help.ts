@@ -1,8 +1,8 @@
 const helpText = `
-  Call on the Octane command using \`/octane <action> <options>\`.
-  Available actions are:
-    - help
-    - create
+Call on the Octane command using \`/octane <action> <options>\`.
+Available actions are:
+- help
+- create
 `;
 
 /**
