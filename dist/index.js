@@ -85,17 +85,37 @@ exports.getConfig = getConfig;
 /***/ }),
 
 /***/ 3066:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getHelp = void 0;
+const _ = __importStar(__nccwpck_require__(250));
+const util_1 = __nccwpck_require__(4024);
 const helpText = `
 Call on the Octane command using \`/octane <action> <options>\`.
-Available actions are:
-- help
-- create
+Available actions are: \`${_.join(_.keys(util_1.ActionMethods), '\`, \`')}\`.
+Available entity types for options are \`${_.join(_.values(util_1.EntityTypes), '\`, \`')}\`.
 `;
 /**
  * Creates the help text used in the `/octane help` command
@@ -287,7 +307,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.githubComment = exports.Defect = exports.Quality = exports.Story = exports.EntityTypes = exports.ActionMethods = void 0;
+exports.createOctaneEntity = exports.githubComment = exports.Defect = exports.Quality = exports.Story = exports.EntityTypes = exports.ActionMethods = void 0;
 const _ = __importStar(__nccwpck_require__(250));
 const octane = __importStar(__nccwpck_require__(9167));
 exports.ActionMethods = {
@@ -356,6 +376,22 @@ function githubComment(gitHubClient, context, comment) {
     });
 }
 exports.githubComment = githubComment;
+/**
+ * Adds a comment to the GitHub Pull Request
+ *
+ * @param {object} gitHubClient An authenticated GitHub context
+ * @param {object} context github context object
+ * @param {String} comment The body of the comment
+ * @async
+ */
+function createOctaneEntity(gitHubClient, context, comment) {
+    const commentObject = _.assign(context.repo, {
+        issue_number: context.payload.issue.number,
+        body: comment
+    });
+    gitHubClient.issues.createComment(commentObject);
+}
+exports.createOctaneEntity = createOctaneEntity;
 
 
 /***/ }),
