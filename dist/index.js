@@ -194,7 +194,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     }
     entityObject.mergeApiConfig(_.get(octaneConfig, entityObject.type, {}));
     core.info(entityObject.title);
-    core.info(entityObject.apiObject);
+    core.info(JSON.stringify(entityObject.apiObject));
     const creationObj = yield octaneConn.create(entityObject.type, entityObject.apiObject).fields('id').execute();
     core.info('Creation response: ' + JSON.stringify(creationObj));
     if (creationObj.total_count === 1) {
@@ -205,6 +205,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             issue_number: payload.issue.number,
             body: entityObject.description + " [" + createdId + "](" + entityUrl + ") has been created!"
         });
+        core.info('Generated Comment: ' + JSON.stringify(comment));
         gitHubClient.issues.createComment(comment);
     }
 });

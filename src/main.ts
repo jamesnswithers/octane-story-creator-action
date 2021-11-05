@@ -95,7 +95,7 @@ const run = async (): Promise<void> => {
   }
   entityObject.mergeApiConfig(_.get(octaneConfig, entityObject.type, {}));
   core.info(entityObject.title);
-  core.info(entityObject.apiObject);
+  core.info(JSON.stringify(entityObject.apiObject));
 
   const creationObj = await octaneConn.create(entityObject.type, entityObject.apiObject).fields('id').execute();
   core.info('Creation response: ' + JSON.stringify(creationObj));
@@ -109,6 +109,7 @@ const run = async (): Promise<void> => {
       issue_number: payload!.issue!.number,
       body: entityObject.description + " [" + createdId + "](" + entityUrl + ") has been created!"
     });
+    core.info('Generated Comment: ' + JSON.stringify(comment));
     gitHubClient.issues.createComment(comment);
   }
 }
