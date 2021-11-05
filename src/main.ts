@@ -5,7 +5,7 @@ import stringArgv from 'string-argv';
 import * as octane from '@microfocus/alm-octane-js-rest-sdk';
 import { getConfig } from './config';
 import { getHelp } from './help';
-import { OctaneEntity, EntityTypes, ActionMethods, Story, Defect, Quality } from './util';
+import { EntityTypes, ActionMethods, Story, Defect, Quality } from './util';
 
 const octaneActions = ['create']
 const octaneStoryTypes = ['story', 'defect', 'quality']
@@ -86,18 +86,27 @@ const run = async (): Promise<void> => {
   
   let entityObject;
   switch (requestedType) {
-    case EntityTypes.STORY:
+    case EntityTypes.STORY: {
       entityObject = new Story(requestedTitle);
-    case EntityTypes.DEFECT:
+      break;
+    }
+    case EntityTypes.DEFECT: {
       entityObject = new Defect(requestedTitle);
-    case EntityTypes.QUALITY:
+      break;
+    }
+    case EntityTypes.QUALITY: {
       entityObject = new Quality(requestedTitle);
+      break;
+    }
+    default: {
+      throw "Entity type not supported";
+    }
   }
   entityObject.mergeApiConfig(_.get(octaneConfig, entityObject.type, {}));
   core.info(entityObject.title);
   core.info(JSON.stringify(entityObject.apiObject));
 
-  const creationObj = await octaneConn.create(entityObject.type, entityObject.apiObject).fields('id').execute();
+  const creationObj = await octaneConn.create(entityObject.octaneType, entityObject.apiObject).fields('id').execute();
   core.info('Creation response: ' + JSON.stringify(creationObj));
 
   if (creationObj.total_count === 1) {

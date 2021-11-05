@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import * as octane from '@microfocus/alm-octane-js-rest-sdk';
 
 export enum ActionMethods {
  CREATE = "create",
@@ -29,15 +30,18 @@ export class OctaneEntity {
 
 export class Story extends OctaneEntity {
   type: EntityTypes = EntityTypes.STORY;
+  octaneType = octane.Octane.entityTypes.stories;
   description: String = 'Story';
 }
 
 export class Quality extends OctaneEntity {
   type: EntityTypes = EntityTypes.QUALITY;
+  octaneType = octane.Octane.entityTypes.qualityStories;
   description: String = 'Quality Story';
 }
 
 export class Defect extends OctaneEntity {
   type: EntityTypes = EntityTypes.DEFECT;
+  octaneType = octane.Octane.entityTypes.defects;
   description: String = 'Defect';
 }

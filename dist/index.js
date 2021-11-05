@@ -185,17 +185,26 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     });
     let entityObject;
     switch (requestedType) {
-        case util_1.EntityTypes.STORY:
+        case util_1.EntityTypes.STORY: {
             entityObject = new util_1.Story(requestedTitle);
-        case util_1.EntityTypes.DEFECT:
+            break;
+        }
+        case util_1.EntityTypes.DEFECT: {
             entityObject = new util_1.Defect(requestedTitle);
-        case util_1.EntityTypes.QUALITY:
+            break;
+        }
+        case util_1.EntityTypes.QUALITY: {
             entityObject = new util_1.Quality(requestedTitle);
+            break;
+        }
+        default: {
+            throw "Entity type not supported";
+        }
     }
     entityObject.mergeApiConfig(_.get(octaneConfig, entityObject.type, {}));
     core.info(entityObject.title);
     core.info(JSON.stringify(entityObject.apiObject));
-    const creationObj = yield octaneConn.create(entityObject.type, entityObject.apiObject).fields('id').execute();
+    const creationObj = yield octaneConn.create(entityObject.octaneType, entityObject.apiObject).fields('id').execute();
     core.info('Creation response: ' + JSON.stringify(creationObj));
     if (creationObj.total_count === 1) {
         const createdId = creationObj.data[0].id;
@@ -242,6 +251,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Defect = exports.Quality = exports.Story = exports.OctaneEntity = exports.EntityTypes = exports.ActionMethods = void 0;
 const _ = __importStar(__nccwpck_require__(250));
+const octane = __importStar(__nccwpck_require__(9167));
 var ActionMethods;
 (function (ActionMethods) {
     ActionMethods["CREATE"] = "create";
@@ -269,6 +279,7 @@ class Story extends OctaneEntity {
     constructor() {
         super(...arguments);
         this.type = EntityTypes.STORY;
+        this.octaneType = octane.Octane.entityTypes.stories;
         this.description = 'Story';
     }
 }
@@ -277,6 +288,7 @@ class Quality extends OctaneEntity {
     constructor() {
         super(...arguments);
         this.type = EntityTypes.QUALITY;
+        this.octaneType = octane.Octane.entityTypes.qualityStories;
         this.description = 'Quality Story';
     }
 }
@@ -285,6 +297,7 @@ class Defect extends OctaneEntity {
     constructor() {
         super(...arguments);
         this.type = EntityTypes.DEFECT;
+        this.octaneType = octane.Octane.entityTypes.defects;
         this.description = 'Defect';
     }
 }
