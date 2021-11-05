@@ -190,12 +190,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     const templateIndex = _.indexOf(octaneCommand, '--template');
     const templateName = templateIndex > 0 ? _.nth(octaneCommand, templateIndex + 1) : 'default';
     const octaneConfig = _.merge(_.get(config, 'default'), _.get(config, templateName));
-    if (!(_.includes(util_1.ActionMethods, requestedAction) && _.includes(util_1.EntityTypes, requestedType))) {
-        core.info('Comment does not contain correct Octane actions or types');
-        return;
-    }
     if (requestedAction === util_1.ActionMethods.help) {
         util_1.githubComment(gitHubClient, context, help_1.getHelp());
+        return;
+    }
+    else if (!(requestedAction === util_1.ActionMethods.create && _.includes(util_1.EntityTypes, requestedType))) {
+        core.info('Comment does not contain correct Octane actions or types');
         return;
     }
     core.info('action: ' + requestedAction);

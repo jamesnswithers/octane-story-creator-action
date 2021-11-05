@@ -60,13 +60,11 @@ const run = async (): Promise<void> => {
   const templateName = templateIndex > 0 ? _.nth(octaneCommand, templateIndex + 1) : 'default';
   const octaneConfig = _.merge(_.get(config, 'default'), _.get(config, templateName))
 
-  if (!(_.includes(ActionMethods, requestedAction) && _.includes(EntityTypes, requestedType))) {
-    core.info('Comment does not contain correct Octane actions or types');
-    return;
-  }
-
   if (requestedAction === ActionMethods.help) {
     githubComment(gitHubClient, context, getHelp());
+    return;
+  } else if (!(requestedAction === ActionMethods.create && _.includes(EntityTypes, requestedType))) {
+    core.info('Comment does not contain correct Octane actions or types');
     return;
   }
   
