@@ -84,6 +84,32 @@ exports.getConfig = getConfig;
 
 /***/ }),
 
+/***/ 3066:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getHelp = void 0;
+const helpText = `
+  Call on the Octane command using \`/octane <action> <options>\`.
+  Available actions are:
+    - help
+    - create
+`;
+/**
+ * Creates the help text used in the `/octane help` command
+ *
+ * @returns {object} Help Text
+ */
+function getHelp() {
+    return helpText;
+}
+exports.getHelp = getHelp;
+
+
+/***/ }),
+
 /***/ 3109:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -127,9 +153,8 @@ const github = __importStar(__nccwpck_require__(5438));
 const string_argv_1 = __importDefault(__nccwpck_require__(9453));
 const octane = __importStar(__nccwpck_require__(9167));
 const config_1 = __nccwpck_require__(88);
+const help_1 = __nccwpck_require__(3066);
 const util_1 = __nccwpck_require__(4024);
-const octaneActions = ['create'];
-const octaneStoryTypes = ['story', 'defect', 'quality'];
 const { SERVER: octaneServer, SHARED_SPACE: octaneSharedSpace, WORKSPACE: octaneWorkspace, USER: octaneUser, PASSWORD: octanePassword, GITHUB_TOKEN: githubToken = "" } = process.env;
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
     const gitHubClient = new github.GitHub(githubToken);
@@ -154,19 +179,23 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     core.info('The first line is: ' + commentFirstLine);
     const octaneCommand = string_argv_1.default(commentFirstLine);
     core.info(octaneCommand.toString());
-    if (octaneCommand[0] !== "/octane") {
+    if (_.nth(octaneCommand, 0) !== "/octane") {
         core.info('Comment does not start with /octane');
         return;
     }
-    const requestedAction = octaneCommand[1];
-    const requestedType = octaneCommand[2];
+    const requestedAction = _.nth(octaneCommand, 1);
+    const requestedType = _.nth(octaneCommand, 2);
     const titleIndex = _.indexOf(octaneCommand, '--title');
     const requestedTitle = titleIndex > 0 ? _.nth(octaneCommand, titleIndex + 1) : payload.issue.title;
     const templateIndex = _.indexOf(octaneCommand, '--template');
     const templateName = templateIndex > 0 ? _.nth(octaneCommand, templateIndex + 1) : 'default';
     const octaneConfig = _.merge(_.get(config, 'default'), _.get(config, templateName));
-    if (!(_.includes(octaneActions, requestedAction) && _.includes(octaneStoryTypes, requestedType))) {
+    if (!(_.includes(util_1.ActionMethods, requestedAction) && _.includes(util_1.EntityTypes, requestedType))) {
         core.info('Comment does not contain correct Octane actions or types');
+        return;
+    }
+    if (requestedAction === util_1.ActionMethods.help) {
+        util_1.githubComment(gitHubClient, context, help_1.getHelp());
         return;
     }
     core.info('action: ' + requestedAction);
@@ -248,15 +277,23 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Defect = exports.Quality = exports.Story = exports.OctaneEntity = exports.EntityTypes = exports.ActionMethods = void 0;
+exports.githubComment = exports.Defect = exports.Quality = exports.Story = exports.EntityTypes = exports.ActionMethods = void 0;
 const _ = __importStar(__nccwpck_require__(250));
 const octane = __importStar(__nccwpck_require__(9167));
-var ActionMethods;
-(function (ActionMethods) {
-    ActionMethods["CREATE"] = "create";
-    ActionMethods["HELP"] = "help";
-})(ActionMethods = exports.ActionMethods || (exports.ActionMethods = {}));
+exports.ActionMethods = {
+    'create': 'create',
+    'help': 'help'
+};
 var EntityTypes;
 (function (EntityTypes) {
     EntityTypes["STORY"] = "story";
@@ -274,7 +311,6 @@ class OctaneEntity {
         this.apiObject = _.merge(this.apiObject, config);
     }
 }
-exports.OctaneEntity = OctaneEntity;
 class Story extends OctaneEntity {
     constructor() {
         super(...arguments);
@@ -302,6 +338,24 @@ class Defect extends OctaneEntity {
     }
 }
 exports.Defect = Defect;
+/**
+ * Adds a comment to the GitHub Pull Request
+ *
+ * @param {object} gitHubClient An authenticated GitHub context
+ * @param {object} context github context object
+ * @param {String} comment The body of the comment
+ * @async
+ */
+function githubComment(gitHubClient, context, comment) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const commentObject = _.assign(context.repo, {
+            issue_number: context.payload.issue.number,
+            body: comment
+        });
+        gitHubClient.issues.createComment(commentObject);
+    });
+}
+exports.githubComment = githubComment;
 
 
 /***/ }),

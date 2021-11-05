@@ -5,10 +5,7 @@ import stringArgv from 'string-argv';
 import * as octane from '@microfocus/alm-octane-js-rest-sdk';
 import { getConfig } from './config';
 import { getHelp } from './help';
-import { EntityTypes, ActionMethods, Story, Defect, Quality } from './util';
-
-const octaneActions = ['create']
-const octaneStoryTypes = ['story', 'defect', 'quality']
+import { EntityTypes, ActionMethods, Story, Defect, Quality, githubComment } from './util';
 
 const {
   SERVER: octaneServer ,
@@ -48,13 +45,13 @@ const run = async (): Promise<void> => {
 
   const octaneCommand = stringArgv(commentFirstLine);
   core.info(octaneCommand.toString());
-  if (octaneCommand[0] !== "/octane") {
+  if (_.nth(octaneCommand, 0) !== "/octane") {
     core.info('Comment does not start with /octane');
     return;
   }
 
-  const requestedAction = octaneCommand[1];
-  const requestedType = octaneCommand[2];
+  const requestedAction = _.nth(octaneCommand, 1);
+  const requestedType = _.nth(octaneCommand, 2);
 
   const titleIndex = _.indexOf(octaneCommand, '--title');
   const requestedTitle = titleIndex > 0 ? _.nth(octaneCommand, titleIndex + 1) : payload!.issue!.title;
@@ -63,8 +60,13 @@ const run = async (): Promise<void> => {
   const templateName = templateIndex > 0 ? _.nth(octaneCommand, templateIndex + 1) : 'default';
   const octaneConfig = _.merge(_.get(config, 'default'), _.get(config, templateName))
 
-  if (!(_.includes(octaneActions, requestedAction) && _.includes(octaneStoryTypes, requestedType))) {
+  if (!(_.includes(ActionMethods, requestedAction) && _.includes(EntityTypes, requestedType))) {
     core.info('Comment does not contain correct Octane actions or types');
+    return;
+  }
+
+  if (requestedAction === ActionMethods.help) {
+    githubComment(gitHubClient, context, getHelp());
     return;
   }
   

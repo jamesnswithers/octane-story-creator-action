@@ -1,9 +1,9 @@
 import * as _ from 'lodash';
 import * as octane from '@microfocus/alm-octane-js-rest-sdk';
 
-export enum ActionMethods {
- CREATE = "create",
- HELP = "help"
+export const ActionMethods = {
+ 'create': 'create',
+ 'help': 'help'
 }
 
 export enum EntityTypes {
@@ -12,7 +12,7 @@ export enum EntityTypes {
   DEFECT = "defect"
 }
 
-export class OctaneEntity {
+class OctaneEntity {
   title: String;
   apiObject: Object;
 
@@ -44,4 +44,20 @@ export class Defect extends OctaneEntity {
   type: EntityTypes = EntityTypes.DEFECT;
   octaneType = octane.Octane.entityTypes.defects;
   description: String = 'Defect';
+}
+
+/**
+ * Adds a comment to the GitHub Pull Request
+ *
+ * @param {object} gitHubClient An authenticated GitHub context
+ * @param {object} context github context object
+ * @param {String} comment The body of the comment
+ * @async
+ */
+ export async function githubComment(gitHubClient, context, comment) {
+  const commentObject = _.assign(context.repo, {
+    issue_number: context.payload.issue.number,
+    body: comment
+  });
+  gitHubClient.issues.createComment(commentObject);
 }
