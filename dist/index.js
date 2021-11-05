@@ -134,7 +134,7 @@ const { SERVER: octaneServer, SHARED_SPACE: octaneSharedSpace, WORKSPACE: octane
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
     const gitHubClient = new github.GitHub(githubToken);
     const config = yield config_1.getConfig(gitHubClient);
-    core.debug('Action config: ' + JSON.stringify(config));
+    core.info('Action config: ' + JSON.stringify(config));
     const context = github.context;
     const payload = context.payload;
     const action = payload.action || '';
@@ -147,11 +147,11 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         core.info('The action didn\'t create or edit a comment');
         return;
     }
-    core.debug('The action is: ' + action);
+    core.info('The action is: ' + action);
     const comment = payload.comment.body;
-    core.debug('The comment is: ' + comment);
+    core.info('The comment is: ' + comment);
     const commentFirstLine = comment.split("\r", 1);
-    core.debug('The first line is: ' + commentFirstLine);
+    core.info('The first line is: ' + commentFirstLine);
     const octaneCommand = string_argv_1.default(commentFirstLine);
     core.info(octaneCommand.toString());
     if (octaneCommand[0] !== "/octane") {
@@ -193,8 +193,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             entityObject = new util_1.Quality(requestedTitle);
     }
     entityObject.mergeApiConfig(_.get(octaneConfig, entityObject.type, {}));
+    core.info(entityObject.title);
+    core.info(entityObject.apiObject);
     const creationObj = yield octaneConn.create(entityObject.type, entityObject.apiObject).fields('id').execute();
-    core.debug('Creation response: ' + JSON.stringify(creationObj));
+    core.info('Creation response: ' + JSON.stringify(creationObj));
     if (creationObj.total_count === 1) {
         const createdId = creationObj.data[0].id;
         core.info("Created id: " + createdId);

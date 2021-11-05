@@ -22,7 +22,7 @@ const {
 const run = async (): Promise<void> => {
   const gitHubClient = new github.GitHub(githubToken);
   const config = await getConfig(gitHubClient);
-  core.debug('Action config: ' + JSON.stringify(config));
+  core.info('Action config: ' + JSON.stringify(config));
 
   const context = github!.context;
   const payload = context!.payload;
@@ -38,13 +38,13 @@ const run = async (): Promise<void> => {
     core.info('The action didn\'t create or edit a comment');
     return;
   }
-  core.debug('The action is: ' + action);
+  core.info('The action is: ' + action);
 
   const comment = payload.comment.body;
-  core.debug('The comment is: ' + comment);
+  core.info('The comment is: ' + comment);
 
   const commentFirstLine = comment.split("\r", 1)
-  core.debug('The first line is: ' + commentFirstLine);
+  core.info('The first line is: ' + commentFirstLine);
 
   const octaneCommand = stringArgv(commentFirstLine);
   core.info(octaneCommand.toString());
@@ -94,9 +94,11 @@ const run = async (): Promise<void> => {
       entityObject = new Quality(requestedTitle);
   }
   entityObject.mergeApiConfig(_.get(octaneConfig, entityObject.type, {}));
+  core.info(entityObject.title);
+  core.info(entityObject.apiObject);
 
   const creationObj = await octaneConn.create(entityObject.type, entityObject.apiObject).fields('id').execute();
-  core.debug('Creation response: ' + JSON.stringify(creationObj));
+  core.info('Creation response: ' + JSON.stringify(creationObj));
 
   if (creationObj.total_count === 1) {
     const createdId = creationObj.data[0].id;
