@@ -3,8 +3,9 @@ import { EntityTypes, ActionMethods } from './util';
 
 const helpText = `
 Call on the Octane command using \`/octane <action> <options>\`.
-Available actions are: \`${ _.join(_.keys(ActionMethods), '\`, \`') }\`.
+Available actions are \`${ _.join(_.keys(ActionMethods), '\`, \`') }\`.
 Available entity types for options are \`${ _.join(_.values(EntityTypes), '\`, \`') }\`.
+For more information check the [octane-story-creator-action repository](https://github.com/jamesnswithers/octane-story-creator-action).
 `;
 
 /**
