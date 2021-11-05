@@ -1,9 +1,11 @@
 import * as _ from 'lodash';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import stringArgv from 'string-argv'
-import * as octane from '@microfocus/alm-octane-js-rest-sdk'
-import { getConfig } from './config'
+import stringArgv from 'string-argv';
+import * as octane from '@microfocus/alm-octane-js-rest-sdk';
+import { getConfig } from './config';
+import { getHelp } from './help';
+import { OctaneEntity, EntityTypes, ActionMethods, Story, Defect, Quality } from './util';
 
 const octaneActions = ['create']
 const octaneStoryTypes = ['story', 'defect', 'quality']
@@ -82,37 +84,18 @@ const run = async (): Promise<void> => {
     }
   });
   
-  let octaneEntity, octaneEntityType, createdComment;
-  if (requestedType === "defect") {
-    octaneEntity = {
-      name: requestedTitle
-    };
-    if (_.hasIn(octaneConfig , 'defect')) {
-      _.merge(octaneEntity, _.get(octaneConfig, 'defect'));
-    }
-    octaneEntityType = octane.Octane.entityTypes.defects;
-    createdComment = "Defect";
-  } else if (requestedType === "story") {
-    octaneEntity = {
-      name: requestedTitle
-    };
-    if (_.hasIn(octaneConfig , 'story')) {
-      _.merge(octaneEntity, _.get(octaneConfig, 'story'));
-    }
-    octaneEntityType = octane.Octane.entityTypes.stories;
-    createdComment = "Story";
-  } else if (requestedType === "quality") {
-    octaneEntity = {
-      name: requestedTitle
-    };
-    if (_.hasIn(octaneConfig , 'quality')) {
-      _.merge(octaneEntity, _.get(octaneConfig, 'quality'));
-    }
-    octaneEntityType = octane.Octane.entityTypes.qualityStories;
-    createdComment = "Quality Story";
+  let entityObject;
+  switch (requestedType) {
+    case EntityTypes.STORY:
+      entityObject = new Story(requestedTitle);
+    case EntityTypes.DEFECT:
+      entityObject = new Defect(requestedTitle);
+    case EntityTypes.QUALITY:
+      entityObject = new Quality(requestedTitle);
   }
+  entityObject.mergeApiConfig(_.get(octaneConfig, entityObject.type, {}));
 
-  const creationObj = await octaneConn.create(octaneEntityType, octaneEntity).fields('id').execute();
+  const creationObj = await octaneConn.create(entityObject.type, entityObject.apiObject).fields('id').execute();
   core.debug('Creation response: ' + JSON.stringify(creationObj));
 
   if (creationObj.total_count === 1) {
@@ -120,15 +103,11 @@ const run = async (): Promise<void> => {
     core.info("Created id: " + createdId);
 
     const entityUrl = octaneServer + "/ui/entity-navigation?p=" + octaneSharedSpace + "/" + octaneWorkspace + "&entityType=work_item&id=" + createdId;
-    gitHubClient.issues.createComment(
-      Object.assign(
-        Object.assign({}, github.context.repo),
-        {
-          issue_number: payload!.issue!.number,
-          body: createdComment + " [" + createdId + "](" + entityUrl + ") has been created!"
-        }
-      )
-    );
+    const comment = _.assign(github.context.repo, {
+      issue_number: payload!.issue!.number,
+      body: entityObject.description + " [" + createdId + "](" + entityUrl + ") has been created!"
+    });
+    gitHubClient.issues.createComment(comment);
   }
 }
 

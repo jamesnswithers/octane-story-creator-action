@@ -127,6 +127,7 @@ const github = __importStar(__nccwpck_require__(5438));
 const string_argv_1 = __importDefault(__nccwpck_require__(9453));
 const octane = __importStar(__nccwpck_require__(9167));
 const config_1 = __nccwpck_require__(88);
+const util_1 = __nccwpck_require__(4024);
 const octaneActions = ['create'];
 const octaneStoryTypes = ['story', 'defect', 'quality'];
 const { SERVER: octaneServer, SHARED_SPACE: octaneSharedSpace, WORKSPACE: octaneWorkspace, USER: octaneUser, PASSWORD: octanePassword, GITHUB_TOKEN: githubToken = "" } = process.env;
@@ -182,51 +183,109 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             ALM_OCTANE_TECH_PREVIEW: true
         }
     });
-    let octaneEntity, octaneEntityType, createdComment;
-    if (requestedType === "defect") {
-        octaneEntity = {
-            name: requestedTitle
-        };
-        if (_.hasIn(octaneConfig, 'defect')) {
-            _.merge(octaneEntity, _.get(octaneConfig, 'defect'));
-        }
-        octaneEntityType = octane.Octane.entityTypes.defects;
-        createdComment = "Defect";
+    let entityObject;
+    switch (requestedType) {
+        case util_1.EntityTypes.STORY:
+            entityObject = new util_1.Story(requestedTitle);
+        case util_1.EntityTypes.DEFECT:
+            entityObject = new util_1.Defect(requestedTitle);
+        case util_1.EntityTypes.QUALITY:
+            entityObject = new util_1.Quality(requestedTitle);
     }
-    else if (requestedType === "story") {
-        octaneEntity = {
-            name: requestedTitle
-        };
-        if (_.hasIn(octaneConfig, 'story')) {
-            _.merge(octaneEntity, _.get(octaneConfig, 'story'));
-        }
-        octaneEntityType = octane.Octane.entityTypes.stories;
-        createdComment = "Story";
-    }
-    else if (requestedType === "quality") {
-        octaneEntity = {
-            name: requestedTitle
-        };
-        if (_.hasIn(octaneConfig, 'quality')) {
-            _.merge(octaneEntity, _.get(octaneConfig, 'quality'));
-        }
-        octaneEntityType = octane.Octane.entityTypes.qualityStories;
-        createdComment = "Quality Story";
-    }
-    const creationObj = yield octaneConn.create(octaneEntityType, octaneEntity).fields('id').execute();
+    entityObject.mergeApiConfig(_.get(octaneConfig, entityObject.type, {}));
+    const creationObj = yield octaneConn.create(entityObject.type, entityObject.apiObject).fields('id').execute();
     core.debug('Creation response: ' + JSON.stringify(creationObj));
     if (creationObj.total_count === 1) {
         const createdId = creationObj.data[0].id;
         core.info("Created id: " + createdId);
         const entityUrl = octaneServer + "/ui/entity-navigation?p=" + octaneSharedSpace + "/" + octaneWorkspace + "&entityType=work_item&id=" + createdId;
-        gitHubClient.issues.createComment(Object.assign(Object.assign({}, github.context.repo), {
+        const comment = _.assign(github.context.repo, {
             issue_number: payload.issue.number,
-            body: createdComment + " [" + createdId + "](" + entityUrl + ") has been created!"
-        }));
+            body: entityObject.description + " [" + createdId + "](" + entityUrl + ") has been created!"
+        });
+        gitHubClient.issues.createComment(comment);
     }
 });
 run();
 exports.default = run;
+
+
+/***/ }),
+
+/***/ 4024:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Defect = exports.Quality = exports.Story = exports.OctaneEntity = exports.EntityTypes = exports.ActionMethods = void 0;
+const _ = __importStar(__nccwpck_require__(250));
+var ActionMethods;
+(function (ActionMethods) {
+    ActionMethods["CREATE"] = "create";
+    ActionMethods["HELP"] = "help";
+})(ActionMethods = exports.ActionMethods || (exports.ActionMethods = {}));
+var EntityTypes;
+(function (EntityTypes) {
+    EntityTypes["STORY"] = "story";
+    EntityTypes["QUALITY"] = "quality";
+    EntityTypes["DEFECT"] = "defect";
+})(EntityTypes = exports.EntityTypes || (exports.EntityTypes = {}));
+class OctaneEntity {
+    constructor(title) {
+        this.title = title;
+        this.apiObject = {
+            name: title
+        };
+    }
+    mergeApiConfig(config) {
+        this.apiObject = _.merge(this.apiObject, config);
+    }
+}
+exports.OctaneEntity = OctaneEntity;
+class Story extends OctaneEntity {
+    constructor() {
+        super(...arguments);
+        this.type = EntityTypes.STORY;
+        this.description = 'Story';
+    }
+}
+exports.Story = Story;
+class Quality extends OctaneEntity {
+    constructor() {
+        super(...arguments);
+        this.type = EntityTypes.QUALITY;
+        this.description = 'Quality Story';
+    }
+}
+exports.Quality = Quality;
+class Defect extends OctaneEntity {
+    constructor() {
+        super(...arguments);
+        this.type = EntityTypes.DEFECT;
+        this.description = 'Defect';
+    }
+}
+exports.Defect = Defect;
 
 
 /***/ }),
