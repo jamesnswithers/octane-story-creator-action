@@ -24,11 +24,10 @@ jobs:
           SHARED_SPACE: '${{ secrets.OCTANE_SHAREDSPACE }}'
           USER: '${{ secrets.OCTANE_USER }}'
           PASSWORD: '${{ secrets.OCTANE_PASSWORD }}'
-          APPLICATIONS: <CSV List of Application IDs> e.g. 11001,11012
 ```
 
 ## Use
-From a Pull Request you can us the `create` command to create User Stories, Defects and Quality Stories.
+From a Pull Request you can use the `create` command to create User Stories, Defects and Quality Stories.
 
 The `create` command structure is:
 
@@ -39,6 +38,12 @@ The `create` command structure is:
 The Action will create a story and comment in the Pull Request the story reference.
 
 If left blank, the title for the Octane story will be taken from the title of the Pull Request.
+
+You can also use the `help` command to create a comment with information about the action.
+
+```
+/octane help
+```
 
 ### Types
 You can specify one of three types; `story`, `defect` and `quality`.
