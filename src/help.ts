@@ -13,6 +13,6 @@ For more information check the [octane-story-creator-action repository](https://
  *
  * @returns {object} Help Text
  */
- export function getHelp() {
+ export function getHelp(): String {
   return helpText;
 }
