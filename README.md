@@ -39,8 +39,8 @@ The Action will create a story and comment in the Pull Request the story referen
 
 These options can be included in the command to populate the story with different information.
 
-- `--title="Optional Title"`
-- `--template=TemplateName`
+- `--title "Optional Title"`
+- `--template TemplateName`
 
 ### Types
 You can specify one of three types; `story`, `defect` and `quality`.
