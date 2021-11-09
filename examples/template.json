@@ -1,0 +1,52 @@
+{
+    "default": { 
+      "defect": {
+        "description": "The default description for a defect",
+        "application_modules": {
+          "data": [{
+            "type": "application_module",
+            "id": 141001
+          }]
+        }
+      },
+      "quality": {
+        "description": "The default description for a quality story",
+        "application_modules": {
+          "data": [{
+            "type": "application_module",
+            "id": 141001
+          }]
+        }
+      },
+      "story": {
+        "description": "The default description for a story",
+        "application_modules": {
+          "data": [{
+            "type": "application_module",
+            "id": 141001
+          }]
+        }
+      }
+    },
+    "FeatureTeam1": {
+      "story": {
+        "program": {
+          "type": "program",
+          "id": 30001
+        },
+        "milestone": {
+          "type": "milestone",
+          "id": 125004
+        },
+        "release": {
+          "type": "release",
+          "id": 62001
+        },
+        "team": {
+          "type": "team",
+          "id": 79001
+        }
+      }
+    }
+  }
+  

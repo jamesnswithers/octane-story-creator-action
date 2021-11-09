@@ -32,18 +32,27 @@ From a Pull Request you can use the `create` command to create User Stories, Def
 The `create` command structure is:
 
 ```
-/octane create <type> "optional title"
+/octane create <type> <options>
 ```
 
 The Action will create a story and comment in the Pull Request the story reference.
 
-If left blank, the title for the Octane story will be taken from the title of the Pull Request.
+These options can be included in the command to populate the story with different information.
+
+- `--title="Optional Title"`
+- `--template=TemplateName`
+
+### Types
+You can specify one of three types; `story`, `defect` and `quality`.
+
+### Templates
+
+The template will help you apply data to stories created. The template is a a JSON document with a default template set. The default template can be overridden by providing another, named template which will be merged with the default. See the [example](https://github.com/jamesnswithers/octane-story-creator-action/blob/main/src/main.ts) for reference, but also review the Octane API documentation for fields not listed.
+
+### Help
 
 You can also use the `help` command to create a comment with information about the action.
 
 ```
 /octane help
 ```
-
-### Types
-You can specify one of three types; `story`, `defect` and `quality`.
